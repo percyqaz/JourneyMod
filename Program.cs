@@ -15,17 +15,17 @@ namespace JourneyMod
 
         static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(@"C:\Users\percy\Steam\steamapps\common\Terraria");
-            string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.Net", "Ionic.Zip.CF", "Relogic" };
-            foreach (string lib in Assembly.GetAssembly(typeof(Item)).GetManifestResourceNames())
+            string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.NET", "Ionic.Zip.CF", "ReLogic" };
+            var terrariaAssembly = Assembly.GetAssembly(typeof(Item));
+            foreach (string lib in terrariaAssembly.GetManifestResourceNames())
             {
                 if (lib.StartsWith("Terraria.Libraries"))
                 {
                     foreach (string name in names)
                     {
-                        if (lib.Contains(name))
+                        if (lib.EndsWith(name + ".dll"))
                         {
-                            var s = Assembly.GetAssembly(typeof(Item)).GetManifestResourceStream(lib);
+                            var s = terrariaAssembly.GetManifestResourceStream(lib);
                             using (BinaryReader br = new BinaryReader(s))
                             {
                                 File.WriteAllBytes(name + ".dll", br.ReadBytes(1000000));
