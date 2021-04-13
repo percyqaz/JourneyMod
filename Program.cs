@@ -15,27 +15,34 @@ namespace JourneyMod
 
         static void Main(string[] args)
         {
-            string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.NET", "Ionic.Zip.CF", "ReLogic" };
-            var terrariaAssembly = Assembly.GetAssembly(typeof(Item));
-            foreach (string lib in terrariaAssembly.GetManifestResourceNames())
+            try
             {
-                if (lib.StartsWith("Terraria.Libraries"))
+                string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.NET", "Ionic.Zip.CF", "ReLogic" };
+                var terrariaAssembly = Assembly.GetAssembly(typeof(Item));
+                foreach (string lib in terrariaAssembly.GetManifestResourceNames())
                 {
-                    foreach (string name in names)
+                    if (lib.StartsWith("Terraria.Libraries"))
                     {
-                        if (lib.EndsWith(name + ".dll"))
+                        foreach (string name in names)
                         {
-                            var s = terrariaAssembly.GetManifestResourceStream(lib);
-                            using (BinaryReader br = new BinaryReader(s))
+                            if (lib.EndsWith(name + ".dll"))
                             {
-                                File.WriteAllBytes(name + ".dll", br.ReadBytes(1000000));
+                                var s = terrariaAssembly.GetManifestResourceStream(lib);
+                                using (BinaryReader br = new BinaryReader(s))
+                                {
+                                    File.WriteAllBytes(name + ".dll", br.ReadBytes(1000000));
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
                 }
+                Log("Extracted libraries.");
             }
-            Log("Extracted libraries.");
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
             Log("Launching Terraria ...");
             running = true;
             new Thread(new ThreadStart(Journey)).Start();
