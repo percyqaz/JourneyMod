@@ -17,7 +17,7 @@ namespace JourneyMod
         {
             try
             {
-                string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.NET", "Ionic.Zip.CF", "ReLogic" };
+                string[] names = new[] { "Newtonsoft.Json", "RailSDK.Net", "Steamworks.NET", "Ionic.Zip.CF", "ReLogic", "CsvHelper", "MP3Sharp", "NVorbis", "System.ValueTuple" };
                 var terrariaAssembly = Assembly.GetAssembly(typeof(Item));
                 foreach (string lib in terrariaAssembly.GetManifestResourceNames())
                 {
@@ -45,7 +45,9 @@ namespace JourneyMod
             }
             Log("Launching Terraria ...");
             running = true;
-            new Thread(new ThreadStart(Journey)).Start();
+            var thread = new Thread(new ThreadStart(Journey));
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
             Terraria.Program.LaunchGame(args);
             running = false;
         }
@@ -90,16 +92,31 @@ namespace JourneyMod
                 case "c":
                     AutoCraft();
                     break;
-                case "god":
-                    Terraria.Main.LocalPlayer.SetImmuneTimeForAllTypes(50000);
-                    item = Terraria.Main.LocalPlayer.inventory[Terraria.Main.LocalPlayer.selectedItem];
-                    item.damage = item.OriginalDamage * 5;
+                case "share":
+                    string code = GetShareCode();
+                    Log("Share code: " + code);
+                    /*
+                    Log("Waiting to edit sign");
+                    Message("Edit a sign to share!");
+                    while (!Terraria.Main.editSign)
+                    {
+                        Thread.Sleep(100);
+                    }
+                    Terraria.Main.npcChatText = "SHARE/" + code;
+                    Terraria.Main.SubmitSignText();*/
+                    System.Windows.Clipboard.SetText("SHARE/" + code);
                     break;
-                case "usetime":
-                case "ut":
-                    item = Terraria.Main.LocalPlayer.inventory[Terraria.Main.LocalPlayer.selectedItem];
-                    item.useAnimation = 100;
-                    item.useTime = 0;
+                case "get":
+                    var text = System.Windows.Clipboard.GetText();
+                    if (text.StartsWith("SHARE/"))
+                    {
+                        try
+                        {
+                            LoadShareCode(text.Substring(6));
+                            Message("Import success!");
+                        }
+                        catch { Message("Import failed."); }
+                    }
                     break;
                 case "toggledelete":
                 case "td":
@@ -114,7 +131,8 @@ namespace JourneyMod
         static bool ItemIsResearched(int id)
         {
             Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(id, out int count);
-            return count > 0 && Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.GetSacrificeCount(id) >= count;
+            return (count > 0 && Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.GetSacrificeCount(id) >= count)
+                || (id == 704 && ItemIsResearched(22));
         }
 
         static void ResearchItem(int id)
@@ -178,6 +196,49 @@ namespace JourneyMod
             else item.TurnToAir();
         }
 
+        static string GetShareCode()
+        {
+            byte[] data = new byte[Terraria.ID.ItemID.Count / 8];
+            for (int b = 0; b < data.Length; b++)
+            {
+                for (int i = b * 8; i < (b + 1) * 8; i++)
+                {
+                    data[b] <<= 1;
+                    try
+                    {
+                        if (ItemIsResearched(i)) data[b] += 1;
+                    }
+                    catch { }
+                }
+            }
+            return Convert.ToBase64String(data);
+        }
+
+        static string LoadShareCode(string code)
+        {
+            var item = new Item();
+            byte[] data = Convert.FromBase64String(code);
+            for (int b = 0; b < data.Length; b++)
+            {
+                for (int i = b * 8 + 7; i >= b * 8; i--)
+                {
+                    if ((data[b] & 1) > 0)
+                    {
+                        item.SetDefaults(i);
+                        Terraria.GameContent.Creative.CreativeItemSacrificesCatalog.Instance.TryGetSacrificeCountCapToUnlockInfiniteItems(i, out int count);
+                        int n = count - Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.GetSacrificeCount(i);
+                        if (n > 0)
+                        {
+                            Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.RegisterItemSacrifice(i, n);
+                            Message("Received " + item.Name + " ([i:" + item.netID.ToString() + "])");
+                        }
+                    }
+                    data[b] >>= 1;
+                }
+            }
+            return Convert.ToBase64String(data);
+        }
+
         static void Journey()
         {
             while (!Terraria.Program.LoadedEverything) { }
@@ -192,6 +253,8 @@ namespace JourneyMod
                     while (running && (Terraria.Main.GameModeInfo.IsJourneyMode && !Terraria.Main.gameMenu))
                     {
                         Thread.Sleep(100);
+
+                        // Auto-re new items, infinite stack favourites
                         foreach (Item item in Terraria.Main.LocalPlayer.inventory)
                         {
                             if (item.newAndShiny)
@@ -202,10 +265,14 @@ namespace JourneyMod
                             }
                             else if (item.favorited && ItemIsResearched(item.netID)) item.stack = item.maxStack;
                         }
+
+                        // Auto-re mouse item
                         if (Terraria.Main.mouseItem != null)
                         {
                             if (!ItemIsResearched(Terraria.Main.mouseItem.netID)) AutoResearch(Terraria.Main.mouseItem);
                         }
+
+                        // Command handling
                         if (Terraria.Main.chatText.Length > 1 && Terraria.Main.chatText.StartsWith("/") && Terraria.Main.chatText.EndsWith("/"))
                         {
                             Command(Terraria.Main.chatText.Substring(1, Terraria.Main.chatText.Length - 2)); Terraria.Main.chatText = "";
