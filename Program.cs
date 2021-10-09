@@ -51,7 +51,6 @@ namespace JourneyMod
             Terraria.Program.LaunchGame(args);
             running = false;
         }
-
         static void Command(string cmd)
         {
             var sb = new StringBuilder();
@@ -95,15 +94,6 @@ namespace JourneyMod
                 case "share":
                     string code = GetShareCode();
                     Log("Share code: " + code);
-                    /*
-                    Log("Waiting to edit sign");
-                    Message("Edit a sign to share!");
-                    while (!Terraria.Main.editSign)
-                    {
-                        Thread.Sleep(100);
-                    }
-                    Terraria.Main.npcChatText = "SHARE/" + code;
-                    Terraria.Main.SubmitSignText();*/
                     System.Windows.Clipboard.SetText("SHARE/" + code);
                     break;
                 case "get":
