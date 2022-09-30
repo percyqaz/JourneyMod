@@ -57,13 +57,13 @@ namespace JourneyMod
             Item item;
             switch (cmd)
             {
-                case "research":
-                    foreach (var kvp in Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.SacrificesCountByItemIdCache)
-                    {
-                        sb.AppendLine(kvp.Key.ToString() + "," + kvp.Value.ToString());
-                    }
-                    File.WriteAllText("research.csv", sb.ToString());
-                    break;
+                //case "research":
+                //    foreach (var kvp in Terraria.Main.LocalPlayerCreativeTracker.ItemSacrifices.)
+                //    {
+                //        sb.AppendLine(kvp.Key.ToString() + "," + kvp.Value.ToString());
+                //    }
+                //    File.WriteAllText("research.csv", sb.ToString());
+                //    break;
                 case "items":
                     item = new Item();
                     var count = 0;
@@ -143,22 +143,47 @@ namespace JourneyMod
         static void JourneyRecipe()
         {
             List<int> items = new List<int>();
-            foreach (var recipe in Terraria.Main.recipe)
-            {
-                //make it inaccessible to craft already researched items
-                if (ItemIsResearched(recipe.createItem.netID)) { recipe.needGraveyardBiome = true; recipe.needLava = true; recipe.needWater = true; recipe.needHoney = true; recipe.needSnowBiome = true; }
+            for (int r = 0; r < Recipe.numRecipes; r++) {
+
+                var recipe = Terraria.Main.recipe[r];
+                if (recipe is null) continue;
+
+                // make it inaccessible to craft already researched items
+                if (ItemIsResearched(recipe.createItem.netID)) 
+                { 
+                    recipe.needGraveyardBiome = true; 
+                    recipe.needLava = true;
+                    recipe.needWater = true;
+                    recipe.needHoney = true;
+                    recipe.needSnowBiome = true;
+                }
                 else
                 {
+                    var filler = 0;
                     items.Clear();
                     foreach (Item i in recipe.requiredItem)
                     {
-                        items.Add(i.netID);
-                        if (i.netID != 0 && !ItemIsResearched(i.netID)) items.Add(i.stack);
-                        else items.Add(0);
+                        if (i.netID != 0 && !ItemIsResearched(i.netID))
+                        {
+                            items.Add(i.netID);
+                            items.Add(i.stack);
+                        }
+                        else
+                        {
+                            filler += 1;
+                        }
                     }
-                    recipe.SetIngridients(items.ToArray());
+
+                    for (int i = 0; i < filler; i++)
+                    {
+                        items.Add(0);
+                        items.Add(0);
+                    }
                 }
+
+                recipe.SetIngredients(items.ToArray());
             }
+            Console.WriteLine("Updated recipes");
         }
 
         static void AutoCraft()
