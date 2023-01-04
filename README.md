@@ -2,15 +2,13 @@
 
 Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ 1.4.4.2 has released and is ***supposedly*** the final patch for the game, I want to fully research every (obtainable) item in Terraria in Journey Mode.
 
-----
+# CURRENT STATE OF THIS TOOL
 
-🚧 There is no release for 1.4.4.2 because they refactored the recipe code and the tool cannot rewrite recipes on the fly correctly any more
+🚧 There is no release for the latest version of Terraria - The exe requires a code patch for this tool to run correctly and it has lots of crash issues anyway
 
-I got around this by modifying my Terraria.exe directly, but obviously I cannot redistribute that
+At some point I may look into remaking this properly, maybe via TMod or maybe via proper IL patching
 
-If at some point I get around to it, this tool will become either a proper tmodloader mod or some kind of binary patch you can make to your exe
-
-Until then you are out of luck, only I have a full working version for 1.4.4.2
+Until then you are out of luck, only I have a full working version on my local machine
 
 The code remains here in case it is useful to anyone
 
