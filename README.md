@@ -1,6 +1,6 @@
 # What's this?
 
-Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ 1.4.4.2 has released and is ***supposedly*** the final patch for the game, I want to fully research every (obtainable) item in Terraria in Journey Mode.
+Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ ~~1.4.4.2~~ 1.4.4.9 has released and is ***supposedly*** the final patch for the game, I want to fully research every (obtainable) item in Terraria in Journey Mode.
 
 # CURRENT STATE OF THIS TOOL
 
