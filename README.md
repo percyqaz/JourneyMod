@@ -18,6 +18,8 @@ Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ ~~1.4.4.2~~ 1.4.4.9 has re
 Note: You must now fully research an item before you have any of that item which poses its own (fun) challenge
 
 ## Install instructions
+**There is currently no public release for the latest version of Terraria**
+
 TModloader isn't always up to date with the latest Terraria version (which keeps changing) and I'm too lazy to figure it out
 So, I'm manually patching the .exe myself using the code in JourneyMod.cs
 
