@@ -1,47 +1,31 @@
 # What's this?
 
-Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ 1.4.4.2 has released and is ***supposedly*** the final patch for the game, I want to fully research every (obtainable) item in Terraria in Journey Mode.
+A tool to streamline journey mode item research
 
-# CURRENT STATE OF THIS TOOL
+Now that Terraria ~~1.4.1.2~~ ~~1.4.2.3~~ ~~1.4.3.6~~ ~~1.4.4.2~~ 1.4.4.9 has released and is ***supposedly*** the final patch for the game, I want to fully research every (obtainable) item in Terraria in Journey Mode.
 
-🚧 There is no release for the latest version of Terraria - The exe requires a code patch for this tool to run correctly and it has lots of crash issues anyway
-
-At some point I may look into remaking this properly, maybe via TMod or maybe via proper IL patching
-
-Until then you are out of luck, only I have a full working version on my local machine
-
-The code remains here in case it is useful to anyone
-
-----
-
-The Journey Mode GUI is a bit cumbersome and it can take a long time just going through recipes, crafting them, researching them, etc etc and so I have made a tool to greatly assist in this process.
-
-This also regears the game towards having to fully research an item before you can use it at all.
-
-# How does it work?
-- Terraria.exe is not obfuscated
-- Run Terraria's main game thread from inside the program
-- Run another thread alongside it
-- Poke at the publicly exposed Terraria variables to achieve desired results from the extra thread
-
-# Features
-- Auto-deletion of any items you pick up that are already researched (can be turned off)
-- Auto-research of any items you pick up that are not already researched (cannot be turned off to make it challenging/fun)
+## Features
+- Items you've researched are always treated as "in your inventory" for the purpose of item crafting
+- Crafting recipes for items you've already researched are hidden
+- Favourited stacks are infinite stacks
+- Automatically research anything you pick up, craft or purchase
+- Automatically delete anything you pick up that is already researched (this is a toggle)
 * When an item is auto-researched and this completes the research, the item stays in your inventory so you can check it out
-- Click any item in your inventory to auto-research it if not already researched
-- Favourited items become infinite stacks
-## Additional powers via commands
-- Tools to export item lists, recipe lists, your character's research data as CSV files if you want to spreadsheet that stuff
-- If you have researched an item, all crafting recipes involving it behave as if you have infinite in your inventory
-- If you have researched an item, all crafting recipes FOR it are disabled
-- Ability to auto-research every recipe at your current crafting station(s) if all ingredients are researched
-- Ability to copy a research-share-code to your clipboard, if someone else is using the mod they can use it add your research library to theirs! (Good for doing this in multiplayer)
+- Automatically craft + research anything you have researched the materials for
+- Export item lists, recipe lists and research lists as CSV files
+- Export and import research to clipboard - You can send the clipboard text to friends to share/sync your research items!
 
-# How do I use it?
-- Put the .exe in your Terraria folder (steamapps/common, Where Terraria.exe is)
-- Run it (may have to try twice / run as administrator)
+Note: You must now fully research an item before you have any of that item which poses its own (fun) challenge
+
+## Install instructions
+TModloader isn't always up to date with the latest Terraria version (which keeps changing) and I'm too lazy to figure it out
+So, I'm manually patching the .exe myself using the code in JourneyMod.cs
+
+This means I don't have a good way to get this into the hands of users (I cannot distribute the modded .exe as-is)
+
+## Ingame commands
 
 * For commands while ingame on a journey mode character, type `/[COMMAND]/` into the chat box to run a command
-* todo: Document what commands are available - for now look at Program.cs
+* todo: Document what commands are available - for now look at the Command method in JourneyMod.cs
 
 **If you find this repository and it looks useful but you can't get it working/want to know how the commands work, you're welcome to open an issue and I will write the documentation properly**
